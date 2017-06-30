@@ -58,6 +58,10 @@ li:hover span.delete-item {
   visibility: visible;
 }
 
+.todo-item:hover {
+  font-weight: bold;
+}
+
 .Footer a {
   padding-left: 2px;
   padding-right: 2px;
