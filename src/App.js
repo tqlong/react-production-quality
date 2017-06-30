@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {TodoForm, TodoList} from './components/todo';
-import {addTodo, generatedId} from './lib/todoHelpers';
+import {TodoForm, TodoList, Footer} from './components/todo';
+import {addTodo, generatedId, findById, toggleTodo, updateTodo, removeTodo} from './lib/todoHelpers';
+import {partial, pipe} from './lib/utils';
 
 class App extends Component {
   state = {
@@ -39,6 +40,22 @@ class App extends Component {
     })
   }
 
+  handleToggle = (id) => {
+    const getUpdatedTodos = pipe(findById, toggleTodo, partial(updateTodo, this.state.todos));
+    const updatedTodos = getUpdatedTodos(id, this.state.todos);
+    this.setState({
+      todos: updatedTodos
+    })
+  }
+
+  handleRemove = (id, event) => {
+    event.preventDefault();
+    const updatedTodos = removeTodo(this.state.todos, id);
+    this.setState({
+      todos: updatedTodos
+    });
+  }
+
   render() {
     const submitHandler = this.state.currentTodo ? this.handleSubmit : this.handleEmptySubmit;
     return (
@@ -53,7 +70,11 @@ class App extends Component {
             handleInputChange={this.handleInputChange} 
             handleSubmit={submitHandler}
             currentTodo={this.state.currentTodo}/>
-          <TodoList todos={this.state.todos}/>
+          <TodoList 
+            handleToggle={this.handleToggle} 
+            handleRemove={this.handleRemove}
+            todos={this.state.todos}/>
+          <Footer />
         </div>
       </div>
     );
